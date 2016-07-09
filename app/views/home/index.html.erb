@@ -1,0 +1,63 @@
+<div class="container">
+    <h1>PDF Generator</h1>
+    <div class="row">
+    <%= link_to 'Generate PDF', download_pdf_path(:format => :pdf), :class => 'btn btn-primary margin-right-20' %>
+    <%= link_to 'Open PDF', open_pdf_path(:format => :pdf), :target => "_blank", :class => 'btn btn-primary margin-right-20' %>
+    <%= link_to 'Preview & Get color Picker', '#', :class=>'btn btn-primary preview-frame' %>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="frame-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Flyer</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li><a href="#color_picker_tab" role="tab" data-toggle="tab">Choose Color</a></li>
+                            <li class="active"><a href="#select_image_tab" role="tab" data-toggle="tab">Choose Photos</a></li>
+                        </ul>
+                        <div class="tab-content margin-bottom-40">
+                            <div class="tab-pane" id="color_picker_tab">
+                                <label class="">Change Flyer background color</label>
+                                <input type="text" class="form-control" id="color_picker" value="<%= @setting.background_color %> ">
+                                <%= select_options_tag('simple_colorpicker',@google_colors,:value=>'no') %>
+                            </div>
+                            <div class="tab-pane  active" id="select_image_tab">
+                                <div class="row image-library">
+                                <% @images.each{ |image| %>
+                                    <div class="col-md-6 pdf-img-preview">
+                                        <%= image_tag image.image, :class => 'img-responsive pdf-preview-img', 'data-image_id' => image.id %>
+                                    </div>
+                                <% } %>
+                                </div>
+                                <div class="row"><div class="col-md-6 temp-append"></div></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <button type="button" class="btn btn-primary save-pdf-setting margin-right-5">Save</button>
+                                <button type="button" class="btn btn-warning discard margin-right-5">Discard</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8 pdf-frame">
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+</script>

@@ -1,0 +1,178 @@
+# Place all the behaviors and hooks related to the matching controller here.
+# All this logic will automatically be available in application.js.
+# You can use CoffeeScript in this file: http://coffeescript.org/
+origin_background_color = ''
+ready = ->
+  $('#simple_colorpicker').simplecolorpicker().on('change', ->
+    current_color = $('select#simple_colorpicker').val()
+    $("div#frame-modal div.pdf-container").css('background-color', current_color)
+    modal_event(current_color)
+    $('input#color_picker').val(current_color)
+  )
+
+  $('a.preview-frame').click ->
+    $.get "load_pdf_html", (data)->
+      $('div#frame-modal div.modal-body div.pdf-frame').html(data)
+
+      $('div#frame-modal').modal('show');
+
+      # define drag event
+      drag_event()
+
+      origin_background_color = $("div#frame-modal div.pdf-container").css('background-color')
+
+  $('input#color_picker').minicolors({
+    theme: 'bootstrap',
+    change: (value, opacity) ->
+      $("div#frame-modal div.pdf-container").css('background-color', value)
+
+#      modal_event(value)
+  })
+
+  modal_event()
+
+modal_event = ->
+  $('button.save-pdf-setting').unbind('click').click ->
+    current_color = $('input#color_picker').val()
+    image_ids = get_image_ids()
+
+    $.ajax 'store_pdf_setting' ,
+      type: "GET",
+      dataType: "JSON",
+      data: { background_color: current_color, image_ids: image_ids }
+      asnyc: false,
+      success: (data) ->
+
+  $('button.discard').unbind('click').click ->
+    color = hexc(origin_background_color)
+    $("div#frame-modal div.pdf-container").css('background-color', color)
+    $('input#color_picker').val(color)
+
+    $.get "load_pdf_html", (data)->
+      $('div#frame-modal div.modal-body div.pdf-frame').html(data)
+      # define drag event
+      drag_event()
+
+hexc = (colorval) ->
+  parts = colorval.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/)
+  delete(parts[0])
+  for i in [1,2,3]
+    parts[i] = parseInt(parts[i]).toString(16)
+    parts[i] = '0' + parts[i] if parts[i].length == 1
+
+  '#' + parts.join('')
+
+drag_event = ->
+#  $("div#select_image_tab div.pdf-img-preview").each (index, obj)->
+  $('div.pdf-img-preview .pdf-preview-img').draggable({
+    helper:(event) ->
+      $(event.target).clone().css({
+        width: '100px',
+        height: 'auto'
+      });
+    containment: 'window',
+    scroll: false,
+    zIndex: 999,
+    appendTo: 'div.temp-append'
+    start: (event, ui) ->
+  })
+
+  pdf_frame_self_draggable()
+
+pdf_frame_self_draggable  = ->
+  $('div.pdf-container .self-draggable').draggable({
+    helper:(event) ->
+      $(event.target).clone().css({
+        width: '100px',
+        height: 'auto'
+      })
+    cursorAt:
+      top: 30
+      left: 35
+    containment: 'window',
+    scroll: false,
+    zIndex: 999,
+    appendTo: 'div.temp-append'
+    start: (event, ui) ->
+  })
+
+  $('div.pdf-container .pdf-img').droppable({
+    tolerance: 'fit',
+    accept: '.pdf-preview-img, .pdf-img',
+    drop: (e, ui) ->
+        drag_type = 1
+        cloneObj = $(ui.draggable).clone()
+
+        current_data_id = $(this).attr('data-image_id')
+        clone_data_id = cloneObj.attr('data-image_id')
+
+        $(this).attr('data-image_id', clone_data_id)
+        $(this).attr('src', cloneObj.attr('src'))
+
+        # in pdf frame drag and drop
+        if $(ui.helper).hasClass('self-draggable')
+          $(this).removeClass('self-draggable').addClass('self-draggable')
+          pdf_frame_self_draggable()
+
+          $(ui.draggable).draggable('destroy')
+          $(ui.helper).remove()
+          ui.draggable.attr('src', '<%= image_path('grey-box.png') %>');
+          ui.draggable.removeAttr("data-image_id")
+          drag_type = 2
+
+        # from left side drag should be self draggable
+        if $(ui.helper).hasClass('pdf-preview-img')
+          $(this).removeClass('self-draggable').addClass('self-draggable')
+          pdf_frame_self_draggable()
+
+        control_left_image(current_data_id, clone_data_id, drag_type)
+  })
+
+  $('div.image-library').droppable({
+      tolerance: 'fit',
+      accept: '.pdf-img',
+      drop: (e, ui) ->
+        is_clone = true
+        cloneObj = $(ui.draggable).clone()
+
+        clone_data_id = cloneObj.attr('data-image_id')
+        clone_image_src = cloneObj.attr('src')
+
+        $('div.pdf-img-preview .pdf-preview-img').each (index, obj) ->
+          if $(obj).attr('data-image_id') == clone_data_id
+            is_clone = false
+            $(obj).parent().show()
+
+        if is_clone
+          tmpHtml = '<div class="col-md-6 pdf-img-preview">' +
+            '<img class="img-responsive pdf-preview-img" src="' + clone_image_src + '" data-image_id="' + clone_data_id + '">' +
+            '</div>'
+          $(this).append(tmpHtml)
+
+        $(ui.draggable).draggable('destroy')
+        $(ui.helper).remove()
+        ui.draggable.attr('src', '<%= image_path('grey-box.png') %>');
+        ui.draggable.removeAttr("data-image_id")
+
+        pdf_frame_self_draggable()
+  })
+control_left_image = (current_data_id, clone_data_id, drag_type) ->
+  $('div.pdf-img-preview .pdf-preview-img').each (index, obj) ->
+    if typeof current_data_id != 'undefined'
+      if $(obj).attr('data-image_id') == current_data_id
+        $(obj).parent().show()
+
+    if $(obj).attr('data-image_id') == clone_data_id and drag_type == 1
+      $(obj).parent().hide()
+
+get_image_ids = ->
+  image_ids = []
+  $('div.pdf-container .pdf-img').each (index, obj)->
+    if $(obj).attr('data-image_id')
+      image_ids[index] = $(obj).attr('data-image_id')
+    else image_ids[index] = 0
+
+  image_ids
+
+$(document).ready(ready);
+$(document).on('page:load', ready);

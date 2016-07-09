@@ -1,0 +1,42 @@
+class HomeController < ApplicationController
+  def index
+
+  end
+
+  def pdf
+    begin
+      respond_to do |format|
+        format.html
+        format.pdf do
+          @pdf = render_to_string :pdf => "mashpy.pdf",
+                                  :template => 'home/pdf.html.erb',
+                                  :layout => 'pdf.html.erb', :encoding => "UTF-8"
+          send_data(@pdf, :filename => "mashpy.pdf",  :type=>"application/pdf")
+        end
+      end
+      # @pdf = render_to_string :pdf => "mashpy", :template => 'home/pdf.html.erb', :layout => 'pdf.html.erb', :encoding => "UTF-8"
+    rescue => exception
+      @exception = exception
+    end
+  end
+  def openPdf
+    begin
+      respond_to do |format|
+        format.html
+        format.pdf do
+          # @pdf = render_to_string :pdf => "mashpy.pdf",
+          #                         :template => 'home/pdf.html.erb',
+          #                         :layout => 'pdf.html.erb', :encoding => "UTF-8"
+          # send_data(@pdf, :filename => "mashpy.pdf",  :type=>"application/pdf")
+          render  :pdf => "mashpy.pdf",
+                  :template => 'home/pdf.html.erb',
+                  :layout => 'pdf.html.erb', :encoding => "UTF-8",
+                  :show_as_html => params[:debug].present?
+        end
+      end
+        # @pdf = render_to_string :pdf => "mashpy", :template => 'home/pdf.html.erb', :layout => 'pdf.html.erb', :encoding => "UTF-8"
+    rescue => exception
+      @exception = exception
+    end
+  end
+end

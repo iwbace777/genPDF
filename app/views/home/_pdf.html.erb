@@ -1,0 +1,107 @@
+<style>
+    .pdf-container {background: <%= @setting.background_color %>}
+</style>
+<div class="container pdf-container">
+  <div class="row">
+    <div class="col-xs-6">
+        <% if @format == 'html' %>
+            <%= image_tag 'shapeimage_3.png', :class => 'logo' %>
+        <% else %>
+            <%= wicked_pdf_image_tag 'shapeimage_3.png', :class => 'logo'%>
+        <% end %>
+    </div>
+    <div class="col-xs-6 text-right">
+      <h3 class="margin-top-0 margin-bottom-5">58 Lake Avenue</h3>
+      <h4 class="margin-top-0">Piedmont, CA 94611</h4>
+      <h4>$999,000</h4>
+    </div>
+  </div>
+  <div class="black-background margin-bottom-10">
+      <h3 class="colo-white margin-top-10">Bottom-Up Remodeled</h3>
+  </div>
+
+  <div class="row margin-bottom-5">
+  <% ['padding-right-2', 'padding-left-2'].each_with_index{|class_name, index| %>
+    <div class="col-xs-6 <%= class_name %>" >
+    <% if @format == 'html' %>
+        <%= image_tag get_pdf_image_src(index), :class => "img-responsive pdf-img #{get_pdf_image_class(index)}",
+                      :style => 'height: 200px', 'data-image_id' => @pdf_images[index].image_id %>
+    <% else %>
+        <%= wicked_pdf_image_tag get_pdf_image_src(index).to_s, :class => 'img-responsive', :style => 'height: 200px' %>
+    <% end %>
+    </div>
+  <% } %>
+  </div>
+  <%
+  image_index = 2
+  [1,2].each{|row_index| %>
+  <div class="row margin-bottom-5">
+    <% [1,2,3].each{|image_name|
+      class_name = ''
+       case image_name
+        when 1
+         class_name = 'padding-right-2'
+        when 2
+          class_name = 'padding-right-2 padding-left-2'
+        when 3
+          class_name = 'padding-left-2'
+        end
+    %>
+    <div class="col-xs-4 <%= class_name %>">
+    <% if @format == 'html' %>
+        <%= image_tag get_pdf_image_src(image_index), :class => "img-responsive pdf-img #{get_pdf_image_class(image_index)}",
+                      :style => 'height: 150px', 'data-image_id' => @pdf_images[image_index].image_id %>
+    <% else %>
+      <%= wicked_pdf_image_tag get_pdf_image_src(image_index), :class => 'img-responsive', :style => 'height: 150px' %>
+    <% end %>
+    </div>
+    <%
+      image_index += 1
+    } %>
+  </div>
+  <% } %>
+  <div class="black-background margin-bottom-20" style="padding: 7px 15px;">
+    <a class="colo-white" href="http://pro.walkintour.com/3307">View Online: http://pro.walkintour.com/3307</a>
+  </div>
+  <div class="row">
+    <div class="col-xs-7">
+      <h3>Residential Home</h3>
+      <p>Have you been searching the Internet for that perfect home? This
+        interactive presentation has been made available by the listing agent
+        to help you get a feel for this property and help you determine if this
+        home could be the one! Enjoy the presentation. When you've
+        completed the tour, feel free to contact your Realtor with any
+        questions or to arrange a showing.</p>
+      <div class="icons">
+      <% ['House', 'garage', 'House', 'garage', 'House'].each_with_index{|image_name, index|
+         string1 = ['Beds', 'Baths', 'Garages', 'Sq.Ft', 'Year']
+         string2 = ['4', '3/0', '2', '1902', '1927']
+      %>
+        <div style="width: 20%; float: left" class="text-center">
+          <div style="height: 55px">
+          <% if @format == 'html' %>
+              <%= image_tag "#{image_name}.png", :class => 'img-responsive', :style => 'width: auto; display: inline-block' %>
+          <% else %>
+              <%= wicked_pdf_image_tag "#{image_name}.png", :class => 'img-responsive', :style => 'width: auto; display: inline-block' %>
+          <% end %>
+          </div>
+          <p><span><%= string1[index] %></span></p>
+          <p><span><%= string2[index] %></span></p>
+        </div>
+      <% } %>
+      </div>
+    </div>
+    <div class="col-xs-5 text-right" style="margin-top: 40px;">
+      <% if @format == 'html' %>
+        <%= image_tag "person.jpg", :class => 'img-responsive', :style => 'width: 80px; height: 80px; display: inline-block;' %>
+      <% else %>
+        <%= wicked_pdf_image_tag 'person.jpg', :class => 'img-responsive', :style => 'width: 80px; height: 80px; display: inline-block;' %>
+      <% end %>
+      <p class="margin-bottom-5" style="line-height: 1.1em"><b>Lex Shan</b></p>
+      <p style="line-height: 1.1em; font-size: 12px;" class="margin-bottom-20">BHG Highland Partners</p>
+      <p style="line-height: 1.1em; font-size: 12px;">+1 510-866-6966</p>
+      <p style="line-height: 1.1em; font-size: 12px;" class="margin-bottom-0">houses@lexshan.com</p>
+      <p style="line-height: 1.1em; font-size: 12px;">2007 Mountain Blvd <br/>Oakland, CA, US</p>
+    </div>
+  </div>
+</div>

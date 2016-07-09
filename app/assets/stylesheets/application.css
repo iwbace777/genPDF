@@ -1,0 +1,57 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ *= require jquery.minicolors
+ *= require jquery.simplecolorpicker.css
+ *= require jquery-ui
+ *= require jquery-ui.theme
+ */
+
+h1{ color: red; }
+.logo { width: 150px; height: 50px; }
+.img-responsive { width: 100%; }
+h3 { font-size: 22px; line-height: 1.0em; }
+h4 { font-size: 15px; line-height: 1.0em; }
+.margin-top-0 { margin-top: 0; }
+.margin-top-10 { margin-top: 10px; }
+.margin-right-20 { margin-right: 20px; }
+.margin-bottom-20 { margin-bottom: 20px; }
+.margin-bottom-10 { margin-bottom: 10px; }
+.margin-bottom-5 { margin-bottom: 5px; }
+.margin-bottom-15 { margin-bottom: 15px; }
+.margin-bottom-40 { margin-bottom: 40px; }
+.margin-bottom-0 { margin-bottom: 0px; }
+.margin-right-5 { margin-right: 5px}
+.padding-right-2 { padding-right: 2.5px; }
+.padding-right-0 { padding-right: 0}
+.padding-left-2 { padding-left: 2.5px; }
+.colo-white { color: #fff; }
+.black-background { background-color: #000; padding: 7px 15px; }
+.black-background h3 { margin: 5px;}
+.page-break { display:block; clear:both; page-break-after:always; }
+.pdf-container { width: 100%; padding-top: 40px; }
+.pdf-img-preview { padding-right: 0; margin-bottom: 12px; }
+.pdf-preview-img {height: 120px; z-index: 100 }
+.modal-lg { width: 1120px; }
+.nav-tabs { margin-bottom: 10px;}
+.image-library {
+    padding-right: 15px;
+    overflow-y: auto;
+    height: 600px;
+    margin-left: 0;
+    padding-top: 15px;
+    background: #eee;
+    overflow-x: visible;
+}
+.pdf-frame { background-color: #ddd; padding: 15px; height: 800px; overflow-y: scroll}
